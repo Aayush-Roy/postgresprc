@@ -33,3 +33,29 @@ export const updateUser=async(req,res)=>{
     })
     return res.json({status:200, message:"User updated successfully"})
 }
+
+export const fetchUsers = async(req,res)=>{
+    const users = await primsa.user.findMany({});
+    return res.json({users});
+}
+
+export const singleUser = async(req,res)=>{
+    const userId = req.params.id;
+    const user = await primsa.user.findFirst({
+        where:{
+            id:Number(userId)
+        }
+    })
+    return res.json(user)
+}
+
+export const deleteUser = async(req,res)=>{
+    const userId = req.params.id;
+    const user = await primsa.user.delete({
+        where:{
+            id:Number(userId),
+        }
+    })
+
+    return res.status(200).json({message:"user deleted"})
+} 
