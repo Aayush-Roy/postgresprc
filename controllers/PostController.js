@@ -1,7 +1,15 @@
 import prisma from "../DB/db.config.js";
 
 export const getAllPost =async(req,res)=>{
-    const posts = await prisma.post.findMany({});
+    const posts = await prisma.post.findMany({
+        include:{
+            comment:{
+                include:{
+                    user:true
+                }
+            }
+        }
+    });
     return res.json({posts});
 }
 
@@ -38,15 +46,43 @@ export const createPost = async(req,res)=>{
 //     return res.status(500).json({ error: err.message });
 //   }
 // };
-export const showPost = async(req,res)=>{
+// export const showPost = async(req,res)=>{
+//     const postId = req.params.id;
+//     const post = await prisma.post.findFirst({
+//         where:{
+//             id:Number(postId),
+//         },
+//         include:{
+//             comment:{
+//                 user:true
+//             }
+//         }
+//     })
+//     return res.json({data:post})
+// }
+export const showPost = async (req, res) => {
+  try {
     const postId = req.params.id;
+
     const post = await prisma.post.findFirst({
-        where:{
-            id:Number(postId)
-        }
-    })
-    return res.json({data:post})
-}
+      where: {
+        id: Number(postId), // remove Number if UUID
+      },
+      include: {
+        comment: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    return res.json({ data: post });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
 
 export const updatePost = async(req,res)=>{
     const postId = req.params.id;
