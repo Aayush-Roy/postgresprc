@@ -8,6 +8,16 @@ export const getAllPost =async(req,res)=>{
                     user:true
                 }
             }
+        },
+        // where:{
+        //     comment_count:{
+        //         gt:0,
+        //     }
+        // }
+        where:{
+            title:{
+                startsWith:"Next",
+            }
         }
     });
     return res.json({posts});
